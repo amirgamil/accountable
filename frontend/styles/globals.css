@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    --bg: "white";
+    --fg: "black";
+    font-family: "Space Mono", monospace;
+    background: var(--fg);
+    color: var(--bg);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+button {
+    /*FIXME*/
+    color: black;
+}
+
+input {
+    outline: none;
+}

@@ -1,0 +1,33 @@
+.container {
+    padding: 0 2rem;
+    height: 100vh;
+    width: 100vw;
+}
+
+.main {
+    max-width: 100%;
+    height: 100vh;
+    padding: 0.5rem 0.25rem;
+    box-sizing: border-box;
+    height: calc(100% - 56px);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+}
+
+.footer {
+    display: flex;
+    flex: 1;
+    padding: 2rem 0;
+    border-top: 1px solid #eaeaea;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
