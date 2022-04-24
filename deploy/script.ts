@@ -8,11 +8,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const { deployer } = await getNamedAccounts();
 
     console.log("Deploying contracts...");
-    const deployedContracts = await deploy("SongStorage", {
+    const deployedContracts = await deploy("Accountable", {
         from: deployer,
         log: true,
     });
-    console.log("SongStorage deployed to ", deployedContracts.address);
+    console.log("Accountable deployed to ", deployedContracts.address);
 };
 export default func;
-func.tags = ["SongStorage"];
+func.tags = ["Accountable"];

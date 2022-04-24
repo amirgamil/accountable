@@ -1,19 +1,43 @@
 .container {
     padding: 0 2rem;
     height: 100vh;
+    margin: 0 auto;
     width: 100vw;
 }
 
 .main {
-    max-width: 100%;
+    margin: 0 auto;
     height: 100vh;
     padding: 0.5rem 0.25rem;
     box-sizing: border-box;
     height: calc(100% - 56px);
     flex: 1;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     word-wrap: break-word;
+}
+
+@media screen and (min-width: 460px) {
+    .center {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 460px) {
+    .center {
+        max-width: 400px;
+    }
+}
+
+.center {
+    margin: 0 auto;
+    border-radius: 24px;
+    padding: 25px;
+    background: white;
+    box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px,
+        rgb(0 0 0 / 1%) 0px 24px 32px;
 }
 
 .footer {

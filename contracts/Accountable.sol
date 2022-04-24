@@ -1,7 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import "@solmate/src/utils/ReentrancyGuard.sol";
+import "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
+// import "forge-std/console.sol";
 
 contract Accountable is ReentrancyGuard {
     // Enum representing status of a stake 
@@ -43,7 +44,8 @@ contract Accountable is ReentrancyGuard {
     //Not sure if i need this
     receive() external payable {}
 
-    fallback() external payable {}
+    fallback() external payable {
+    }
 
     modifier validStakeID(uint256 stakeID) {
         require(stakeID < stakes.length, "Invalid id provided");
@@ -82,6 +84,8 @@ contract Accountable is ReentrancyGuard {
 
     function createNewStake(string memory name, address accountabilityBuddy) external payable nonReentrant {
         //TODO: calculate amountStaked = msg.value - minus gas cost
+        require(msg.value > 0, "Must stake at least non-zero amount of ether");
+        
         Stake memory newStake = Stake({stakee: msg.sender, name: name, amountStaked: msg.value, accountabilityBuddy: accountabilityBuddy, id: stakes.length, status: Status.Pending});
         stakes.push(newStake);
 
@@ -94,9 +98,12 @@ contract Accountable is ReentrancyGuard {
     //@notice, upon successful completion of the agreed upon task/goal/whatever, the accountability buddy
     //marks the stake as successful for the money to be transferred back to the stakee.
     function markStakeSuccessful(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+        //ensure accountability buddy
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
         //transfer funds to the stakee
-        //TODO: fix amount is a uint256
-        (bool success, ) = stakes[stakeID].stakee.call{value: stakes[stakeID].amountStaked}("");
+
+        //TODO: fix gas cost
+        (bool success, ) = payable(stakes[stakeID].stakee).call{value: 10 gwei }("");
         require(success, "Failed to send Ether to Stakee");
         stakes[stakeID].status = Status.Success;
 
@@ -104,9 +111,11 @@ contract Accountable is ReentrancyGuard {
     }
 
     function markStakeFailed(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+        //ensure accountability buddy
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
         //transfer funds to the stakee
         //TODO: fix amount is a uint256
-        (bool success, ) = stakes[stakeID].accountabilityBuddy.call{value: stakes[stakeID].amountStaked}("");
+        (bool success, ) = payable(stakes[stakeID].accountabilityBuddy).call{value: stakes[stakeID].amountStaked}("");
         require(success, "Failed to send Ether to Accountability Buddy");
         stakes[stakeID].status = Status.Failure;
 

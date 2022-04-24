@@ -45,7 +45,7 @@ export const Nav = () => {
                                 }
                             }}
                         >
-                            {context.address ? `${context.address.slice(0, 8).toLowerCase()}...` : "Sign In"}
+                            {context.address ? `${context.address.slice(0, 8).toLowerCase()}...` : "Connect Wallet"}
                         </button>
                     </Container>
                 </div>

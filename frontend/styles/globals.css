@@ -5,12 +5,11 @@
 html,
 body {
     padding: 0;
-    margin: 0;
-    --bg: "white";
-    --fg: "black";
-    font-family: "Space Mono", monospace;
-    background: var(--fg);
-    color: var(--bg);
+    margin: 0 auto;
+    --fg: "white";
+    font-family: "IBM Plex Serif", serif;
+    color: var(--fg);
+    background: linear-gradient(220.55deg, #b7dcff 0%, #ffa4f6 100%);
 }
 
 a {

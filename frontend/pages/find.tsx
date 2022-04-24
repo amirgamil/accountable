@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import * as React from "react";
 import Head from "next/head";
-import { Playground } from "../components/playground";
 import styles from "../styles/Home.module.css";
 import { Nav } from "../components/nav";
 import { Footer } from "../components/footer";
@@ -12,7 +11,6 @@ import styled from "styled-components";
 import { useQuery } from "react-query";
 import { mapArrToSong, Song } from "../lib/musicHelpers";
 import { Spinner } from "../components/spinner";
-import { SongField } from "../components/songField";
 
 const Container = styled.div`
     margin-top: 100px;
@@ -60,11 +58,7 @@ const FindPage: NextPage = () => {
                     />
 
                     <div className="flex flex-col items-center justify-center my-7">
-                        {isLoading ? (
-                            <Spinner />
-                        ) : (
-                            filteredResults?.map((el, i) => <SongField key={i} name={el.name} id={el.id} />)
-                        )}
+                        {isLoading ? <Spinner /> : filteredResults?.map((el, i) => <p></p>)}
                     </div>
                 </Container>
                 <Footer />
