@@ -1,7 +1,7 @@
 import * as React from "react";
 import { providers, Signer } from "ethers";
 import { ethers } from "ethers";
-import { songStorageABI } from "../abi/songStorage";
+import { ACCOUNTABLE_ABI } from "../abi/accountable";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -41,14 +41,14 @@ export const AppContextProvider = (props: any) => {
         const provider = new ethers.providers.Web3Provider(await web3Modal.connect(), "any");
         setProvider(provider);
 
-        const songStorageContract = new ethers.Contract(
+        const accountabilityContract = new ethers.Contract(
             process.env.NODE_ENV === "development"
-                ? "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+                ? "0x5fbdb2315678afecb367f032d93f642f64180aa3"
                 : "0x188fe2c81Fde9c86F4e1a865EAddA9392Fb7F4f6" ?? "",
-            songStorageABI,
+            ACCOUNTABLE_ABI,
             provider
         );
-        setContract(songStorageContract);
+        setContract(accountabilityContract);
 
         const signer = provider.getSigner();
         setSigner(signer);

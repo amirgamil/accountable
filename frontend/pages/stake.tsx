@@ -13,6 +13,8 @@ import { cloneDeep } from "lodash";
 import { mapArrToStake, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
 import { CHAIN_EXPLORER } from "../lib/defaults";
+import { StyledDiv } from "../components/styledDiv";
+import { isEthersError } from "../lib/types";
 
 interface NotesRecord {
     oldNotes: string;
@@ -27,7 +29,7 @@ const StakePage: NextPage = () => {
 
     const contractExists = context.contract !== undefined;
 
-    const [writeTxHash, setWriteTxHash] = React.useState<string | undefined>(undefined);
+    const [loading, setLoading] = React.useState<boolean>(false);
 
     const { isLoading, error, data } = useQuery<Stake | undefined>(
         "stake",
@@ -39,18 +41,16 @@ const StakePage: NextPage = () => {
                 return result;
             }
         },
-        { retry: 10, enabled: contractExists }
+        { retry: 1, enabled: contractExists }
     );
     console.log(isLoading, error, data);
-
-    const [isUpdating, setIsUpdating] = React.useState<boolean>(false);
 
     if (error) {
         return (
             <div className={styles.container}>
                 <main className={styles.main}>
                     <div className="w-full h-full flex items-center justify-center">
-                        <p className="opacity-50">A stake is waiting to be created here...</p>
+                        <p className="opacity-50">No stake with this ID has been created!</p>
                     </div>
                     <Footer />
                 </main>
@@ -72,6 +72,43 @@ const StakePage: NextPage = () => {
         );
     }
 
+    const attemptApproveOrFail = async (approve: boolean) => {
+        setLoading(true);
+        try {
+            const provider = context.provider;
+            const signer = context.signer;
+            const contract = context.contract;
+
+            if (provider && signer && contract) {
+                const contractWithSigner = contract.connect(signer);
+
+                let tx = undefined;
+                if (approve) {
+                    await contractWithSigner.callStatic.markStakeSuccessful(id);
+                    tx = await contractWithSigner.markStakeSuccessful(id);
+                } else {
+                    await contractWithSigner.callStatic.markStakeFailed(id);
+                    tx = await contractWithSigner.markStakeFailed(id);
+                }
+                await tx.wait();
+                setLoading(false);
+            }
+        } catch (ex: unknown) {
+            setLoading(false);
+            if (isEthersError(ex)) {
+                const regex = /'(.*?)'/g;
+                const matches = regex.exec(ex.data.message);
+                if (matches) {
+                    toast.error(`Error: ${matches[1]}`);
+                    return Promise.reject(ex);
+                }
+            }
+            toast.error(`Error occurred trying to mark stake as ${approve ? "successful" : "failed"}`);
+            return Promise.reject(ex);
+        }
+    };
+
+    const colorBasedOnState = data.status === 1 ? "#5eda6085" : data.status === 2 ? "#fd3f0285" : "white";
     return (
         <div className={styles.container}>
             <Head>
@@ -82,11 +119,45 @@ const StakePage: NextPage = () => {
 
             <Nav />
             <main className={styles.main}>
-                <div className="py-4">
-                    <h1 className="text-xl font-bold">{data.name}</h1>
-                    <h3>BPM: {data.bpm}</h3>
+                <div style={{ background: colorBasedOnState }} className={styles.center}>
+                    <p className="text-xl font-bold w-full text-center">{data.name}</p>
+                    <div className="py-1"></div>
+                    <div className="w-full flex flex-col items-center justify-center m-0 p-0">
+                        {loading ? (
+                            <div className="p-4">
+                                <Spinner />
+                            </div>
+                        ) : data.status === 0 ? (
+                            <>
+                                <Button
+                                    majorColor={"#5eda6085"}
+                                    hoverColor={"#5eda60"}
+                                    disabled={false}
+                                    onClick={() => attemptApproveOrFail(true)}
+                                >
+                                    ✓
+                                </Button>
+                                <Button
+                                    majorColor={"#fd3f0285"}
+                                    hoverColor={"#fd4102"}
+                                    disabled={false}
+                                    onClick={() => attemptApproveOrFail(false)}
+                                >
+                                    ✗
+                                </Button>
+                            </>
+                        ) : data.status === 1 ? (
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-xl font-bold">✓</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-xl font-bold">✘</p>
+                            </div>
+                        )}
+                    </div>
+                    <Toaster />
                 </div>
-                <Toaster />
                 <Footer />
             </main>
         </div>

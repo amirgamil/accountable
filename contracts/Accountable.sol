@@ -41,11 +41,9 @@ contract Accountable is ReentrancyGuard {
     //the agreed upon goal), the accountabilityBuddy gets the amountStaked back.
     event StakeFailed(string name, uint id);
 
-    //Not sure if i need this
     receive() external payable {}
 
-    fallback() external payable {
-    }
+    // fallback() external payable {}
 
     modifier validStakeID(uint256 stakeID) {
         require(stakeID < stakes.length, "Invalid id provided");
@@ -82,9 +80,9 @@ contract Accountable is ReentrancyGuard {
         return currStakes;
     }
 
-    function createNewStake(string memory name, address accountabilityBuddy) external payable nonReentrant {
-        //TODO: calculate amountStaked = msg.value - minus gas cost
-        require(msg.value > 0, "Must stake at least non-zero amount of ether");
+    function createNewStake(string memory name, address accountabilityBuddy) external payable nonReentrant returns (uint256) {
+        require(msg.value > 0, "Must stake non-zero amount of ether");
+        require(accountabilityBuddy != msg.sender, "Must assign someone else as accountability buddy");
         
         Stake memory newStake = Stake({stakee: msg.sender, name: name, amountStaked: msg.value, accountabilityBuddy: accountabilityBuddy, id: stakes.length, status: Status.Pending});
         stakes.push(newStake);
@@ -93,17 +91,19 @@ contract Accountable is ReentrancyGuard {
         stakeIDsForAccountabilityAddress[accountabilityBuddy].push(stakes.length - 1);
 
         emit NewStakeCreated(name, stakes.length - 1);
+
+        return stakes.length - 1;
     }
 
     //@notice, upon successful completion of the agreed upon task/goal/whatever, the accountability buddy
     //marks the stake as successful for the money to be transferred back to the stakee.
     function markStakeSuccessful(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
-        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
-        //transfer funds to the stakee
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as successful");
 
-        //TODO: fix gas cost
-        (bool success, ) = payable(stakes[stakeID].stakee).call{value: 10 gwei }("");
+        //transfer funds to the stakee
+        (bool success, ) = payable(stakes[stakeID].stakee).call{value: stakes[stakeID].amountStaked }("");
+
         require(success, "Failed to send Ether to Stakee");
         stakes[stakeID].status = Status.Success;
 
@@ -112,10 +112,11 @@ contract Accountable is ReentrancyGuard {
 
     function markStakeFailed(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
-        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as failed");
+
         //transfer funds to the stakee
-        //TODO: fix amount is a uint256
         (bool success, ) = payable(stakes[stakeID].accountabilityBuddy).call{value: stakes[stakeID].amountStaked}("");
+
         require(success, "Failed to send Ether to Accountability Buddy");
         stakes[stakeID].status = Status.Failure;
 
