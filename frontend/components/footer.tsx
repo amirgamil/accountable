@@ -11,6 +11,10 @@ export const Footer = () => {
                     <a className="underline underline-offset-2 " href="https://twitter.com/amirbolous">
                         Amir
                     </a>{" "}
+                    on{" "}
+                    <a className="underline underline-offset-2 " href="https://www.optimism.io/">
+                        Optimism
+                    </a>
                 </i>
             </div>
         </div>

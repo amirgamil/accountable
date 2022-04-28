@@ -8,5 +8,5 @@ export interface EthersError {
 }
 
 export const isEthersError = (obj: any): obj is EthersError => {
-    return typeof obj.code === "number" && obj.data !== undefined && typeof obj.data.messge === "string";
+    return typeof obj.code === "number" && obj.data !== undefined && typeof obj.data.message === "string";
 };

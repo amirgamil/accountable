@@ -18,24 +18,67 @@ export const Nav = () => {
     };
 
     return (
-        <div className="relative w-full opacity-50 z-40">
+        <div className="relative opacity-80 w-full z-40">
             <div className="relative w-full pt-8 h-26 flex text-white">
                 <div className="ml-auto my-auto mr-16">
                     <Container>
                         {context.address && (
                             <>
                                 <Link href={`/find`}>
-                                    <button className="button secondary mr-4">Explore</button>
+                                    <button
+                                        style={{
+                                            background: "white",
+                                            padding: "10px",
+                                            borderRadius: "12px",
+                                            margin: "0 10px 10px 10px",
+                                        }}
+                                        className="button secondary mr-4"
+                                    >
+                                        Find
+                                    </button>
                                 </Link>
-                                <Link href={`/create`}>
-                                    <button className="button secondary mr-4">Create</button>
+                                <Link href={`/`}>
+                                    <button
+                                        style={{
+                                            background: "white",
+                                            padding: "10px",
+                                            borderRadius: "12px",
+                                            margin: "0 10px 10px 10px",
+                                        }}
+                                        className="button secondary mr-4"
+                                    >
+                                        Stake
+                                    </button>
                                 </Link>
-                                <button className="my-auto cursor-pointer secondary mr-4" onClick={context.signOut}>
+                                <Link href={`/faq`}>
+                                    <button
+                                        style={{
+                                            background: "white",
+                                            padding: "10px",
+                                            borderRadius: "12px",
+                                            margin: "0 10px 10px 10px",
+                                        }}
+                                        className="button secondary mr-4"
+                                    >
+                                        FAQ
+                                    </button>
+                                </Link>
+                                <button
+                                    style={{
+                                        background: "white",
+                                        padding: "10px",
+                                        borderRadius: "12px",
+                                        margin: "0 10px 10px 10px",
+                                    }}
+                                    className="my-auto cursor-pointer secondary mr-4"
+                                    onClick={context.signOut}
+                                >
                                     Sign Out
                                 </button>
                             </>
                         )}
                         <button
+                            style={{ background: "white", padding: "10px", borderRadius: "12px" }}
                             className="cursor-pointer"
                             onClick={() => {
                                 if (context.address) {

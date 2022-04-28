@@ -6,66 +6,115 @@ import { Nav } from "../components/nav";
 import { Footer } from "../components/footer";
 import { Button } from "../components/button";
 import { useAppContext } from "../components/context";
-import { Toaster } from "react-hot-toast";
-import styled from "styled-components";
 import { useQuery } from "react-query";
-import { mapArrToSong, Song } from "../lib/musicHelpers";
+import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
+import { mapArrToStake, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
+import { isEthersError } from "../lib/types";
+import { StyledInput } from "../components/input";
+import { StakeField } from "../components/StakeField";
 
-const Container = styled.div`
-    margin-top: 100px;
-    input {
-        border: 1px solid rgb(0, 0, 0, 0.4);
-        width: 35vw;
-    }
-`;
-
-const FindPage: NextPage = () => {
-    const [name, setName] = React.useState<string>("");
+const StakePage: NextPage = () => {
     const context = useAppContext();
 
-    const contactsExists = context.contract !== undefined;
+    const contractExists = context.contract !== undefined;
 
-    const { data, isLoading, error } = useQuery<Song[]>(
-        "allSongs",
+    const [searchResult, setSearchResult] = React.useState<string>("");
+    const [loading, setLoading] = React.useState<boolean>(false);
+
+    const { isLoading, error, data } = useQuery<Stake[] | undefined>(
+        "stake",
         async () => {
             if (context.contract) {
-                const dataResult = await context.contract.getAllSongs();
-                return dataResult.map(mapArrToSong);
+                const dataResult = await context.contract.getAllStakes();
+                return dataResult.map((el) => mapArrToStake(el));
             }
         },
-        { retry: 10, enabled: contactsExists }
+        { retry: 1, enabled: contractExists }
     );
 
-    const filteredResults = data?.filter((el) => el.name.includes(name));
+    if (error) {
+        return (
+            <div className={styles.container}>
+                <main className={styles.main}>
+                    <div className="w-full grow h-full flex items-center justify-center">
+                        <p className="opacity-50">Uh oh, an error occurred!</p>
+                    </div>
+                    <Footer />
+                </main>
+            </div>
+        );
+    }
 
+    //FIXME: prompt to sign in with wallet if not signed in instead of just showing loading screen
+    if (isLoading || !context.contract || !data) {
+        return (
+            <div className={styles.container}>
+                <main className={styles.main}>
+                    <div className="w-full grow h-full flex items-center justify-center">
+                        <Spinner />
+                    </div>
+                    <Footer />
+                </main>
+            </div>
+        );
+    }
+
+    const filteredResults = data?.filter((el) => {
+        if (searchResult.startsWith("stakee:")) {
+            return el.stakee.includes(searchResult.replace("stakee:", "").trim());
+        } else if (searchResult.startsWith("buddy:")) {
+            return el.accountabilityBuddy.includes(searchResult.replace("buddy:", "").trim());
+        } else {
+            let result = searchResult;
+            if (result.startsWith("name:")) {
+                result = result.replace("name:", "").trim();
+            }
+            return el.name.includes(result);
+        }
+    });
     return (
         <div className={styles.container}>
             <Head>
-                <title>Thalia</title>
+                <title>Accountable</title>
                 <meta name="description" content="On-chain music composition" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <Nav />
             <main className={styles.main}>
-                <Container className="flex flex-col items-center justify-center w-full">
-                    <input
-                        className="p-4"
-                        placeholder="Search for the name of a song here"
-                        value={name}
-                        onChange={(evt) => setName(evt.target.value)}
+                <div style={{ background: "white" }} className={styles.center}>
+                    <StyledInput
+                        className="w-full"
+                        placeholder="Filter by name, stakee, or buddy"
+                        value={searchResult}
+                        onChange={(evt) => setSearchResult(evt.target.value)}
                     />
-
-                    <div className="flex flex-col items-center justify-center my-7">
-                        {isLoading ? <Spinner /> : filteredResults?.map((el, i) => <p></p>)}
-                    </div>
-                </Container>
-                <Footer />
-                <Toaster />
+                    {!searchResult && (
+                        <>
+                            <div className="py-3"></div>
+                            <p>
+                                To filter by name, just enter the name. To filter by stakee, type{" "}
+                                <strong>stakee:[addr]</strong> and by buddy, <strong>buddy: [addr]</strong>
+                            </p>
+                        </>
+                    )}
+                    {filteredResults?.map((el, i) => (
+                        <StakeField
+                            key={i}
+                            name={el.name}
+                            id={el.id}
+                            accountabilityBuddy={el.accountabilityBuddy}
+                            stakeeAddress={el.stakee}
+                        />
+                    ))}
+                    <Toaster />
+                </div>
             </main>
+            <Footer />
         </div>
     );
 };
 
-export default FindPage;
+export default StakePage;

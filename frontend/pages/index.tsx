@@ -15,6 +15,8 @@ const Home: NextPage = () => {
     const [accBuddyAddress, setAccBuddyAdddress] = React.useState<string>("");
     const [amountStaked, setAmountStaked] = React.useState<string>("");
     const [name, setName] = React.useState<string>("");
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const [successId, setSuccessId] = React.useState<string | undefined>(undefined);
     const context = React.useContext(AppContext);
 
     const setAmountStakedHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +30,7 @@ const Home: NextPage = () => {
     };
 
     const createNewStake = async () => {
+        setLoading(true);
         if (accBuddyAddress === "" || amountStaked === "") {
             toast.error("Please fill in all fields");
         } else {
@@ -45,10 +48,18 @@ const Home: NextPage = () => {
 
                     await contractWithSigner.callStatic.createNewStake(name, accBuddyAddress, overrides);
                     const tx = await contractWithSigner.createNewStake(name, accBuddyAddress, overrides);
-                    console.log(tx);
-                    toast.success(`Transaction sent: ${tx.hash}`);
+                    const res = await tx.wait();
+                    console.log(tx, res.events);
+                    const event = res.events.find((evt) => evt.transactionHash === tx.hash && evt.args[0] === name);
+                    if (!event) {
+                        throw new Error("Unexpected error occurred");
+                    }
+
+                    setLoading(false);
+                    setSuccessId(`${event.args[1].toString()}`);
                 }
             } catch (ex: unknown) {
+                setLoading(false);
                 if (isEthersError(ex)) {
                     const regex = /'(.*?)'/g;
                     const matches = regex.exec(ex.data.message);
@@ -74,47 +85,64 @@ const Home: NextPage = () => {
             <Nav />
             <main className={styles.main}>
                 <div className={styles.center}>
-                    <p className="text-xl font-semibold">Keep me accountable</p>
-                    <div className="py-1"></div>
-                    <p className="text-s">Put your money where your mouth is. Literally.</p>
-                    <div className="py-4"></div>
-                    <div>
-                        <div className="flex flex-col">
-                            <StyledInput
-                                placeholder="Accountability Buddy Address"
-                                value={accBuddyAddress}
-                                onChange={(evt) => setAccBuddyAdddress(evt.target.value)}
-                            />
+                    {!successId ? (
+                        <div>
+                            <p className="text-xl font-semibold">Keep me accountable</p>
+                            <div className="py-1"></div>
+                            <p className="text-s">Put your money where your mouth is. Literally.</p>
+                            <div className="py-4"></div>
+                            <div>
+                                <div className="flex flex-col">
+                                    <StyledInput
+                                        placeholder="Accountability buddy address"
+                                        value={accBuddyAddress}
+                                        onChange={(evt) => setAccBuddyAdddress(evt.target.value)}
+                                    />
+                                </div>
+                                <div className="py-4"></div>
+                                <div className="flex flex-col">
+                                    <StyledInput
+                                        className="py-2 px-4"
+                                        placeholder="Ether amount staked e.g. 0.01"
+                                        value={amountStaked}
+                                        onChange={(evt) => setAmountStakedHandler(evt)}
+                                    />
+                                </div>
+                                <div className="py-4"></div>
+                                <div className="flex flex-col">
+                                    <StyledInput
+                                        className="py-2 px-4"
+                                        placeholder="Name of task e.g. finish this project"
+                                        value={name}
+                                        onChange={(evt) => setName(evt.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="py-4"></div>
+                            <div className="w-full flex flex-col items-center justify-center p-0">
+                                <Button
+                                    disabled={amountStaked === "" || accBuddyAddress === ""}
+                                    onClick={createNewStake}
+                                >
+                                    Stake
+                                </Button>
+                            </div>
                         </div>
-                        <div className="py-4"></div>
-                        <div className="flex flex-col">
-                            <StyledInput
-                                className="py-2 px-4"
-                                placeholder="Ether Amount staked e.g. 0.01"
-                                value={amountStaked}
-                                onChange={(evt) => setAmountStakedHandler(evt)}
-                            />
+                    ) : (
+                        <div className="w-full flex flex-col items-center justify-center p-0">
+                            <p className="text-xl font-semibold">Success!</p>
+                            <p>
+                                Your stake&apos;s ID is <strong>{successId}</strong> and will live{" "}
+                                <a href={`/stake?id=${successId}`}>here</a>. Save the link or remember the ID. <br></br>
+                                <br></br>
+                                Your accountability buddy will be able to mark the task as a success or a failure there.
+                            </p>
                         </div>
-                        <div className="py-4"></div>
-                        <div className="flex flex-col">
-                            <StyledInput
-                                className="py-2 px-4"
-                                placeholder="Name of task e.g. finish this project"
-                                value={name}
-                                onChange={(evt) => setName(evt.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <div className="py-4"></div>
-                    <div className="w-full flex flex-col items-center justify-center p-0">
-                        <Button disabled={amountStaked === "" || accBuddyAddress === ""} onClick={createNewStake}>
-                            Stake
-                        </Button>
-                    </div>
+                    )}
                     <Toaster />
                 </div>
-                <Footer />
             </main>
+            <Footer />
         </div>
     );
 };

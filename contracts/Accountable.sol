@@ -48,7 +48,6 @@ contract Accountable is ReentrancyGuard {
     modifier validStakeID(uint256 stakeID) {
         require(stakeID < stakes.length, "Invalid id provided");
         require(stakes[stakeID].status == Status.Pending, "Stake is not pending");
-        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
         _;
     }
 
@@ -112,6 +111,7 @@ contract Accountable is ReentrancyGuard {
 
     function markStakeFailed(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
         require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as failed");
 
         //transfer funds to the stakee

@@ -9,18 +9,9 @@ import { useAppContext } from "../components/context";
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
-import { cloneDeep } from "lodash";
-import { mapArrToStake, Stake } from "../lib/contractHelpers";
+import { mapArrToStake, oneEtherInWei, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
-import { CHAIN_EXPLORER } from "../lib/defaults";
-import { StyledDiv } from "../components/styledDiv";
 import { isEthersError } from "../lib/types";
-
-interface NotesRecord {
-    oldNotes: string;
-    //currentNotes is oldNotes + whatever is added
-    currentNotes: string;
-}
 
 const StakePage: NextPage = () => {
     const context = useAppContext();
@@ -36,20 +27,17 @@ const StakePage: NextPage = () => {
         async () => {
             if (context.contract && id !== undefined) {
                 const dataResult = await context.contract.getStakeFromId(id);
-                //return a tuple with all of the struct elements
-                const result = mapArrToStake(dataResult);
-                return result;
+                return mapArrToStake(dataResult);
             }
         },
         { retry: 1, enabled: contractExists }
     );
-    console.log(isLoading, error, data);
 
     if (error) {
         return (
             <div className={styles.container}>
                 <main className={styles.main}>
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="grow w-full h-full flex items-center justify-center">
                         <p className="opacity-50">No stake with this ID has been created!</p>
                     </div>
                     <Footer />
@@ -63,7 +51,7 @@ const StakePage: NextPage = () => {
         return (
             <div className={styles.container}>
                 <main className={styles.main}>
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="grow w-full h-full flex items-center justify-center">
                         <Spinner />
                     </div>
                     <Footer />
@@ -120,8 +108,14 @@ const StakePage: NextPage = () => {
             <Nav />
             <main className={styles.main}>
                 <div style={{ background: colorBasedOnState }} className={styles.center}>
-                    <p className="text-xl font-bold w-full text-center">{data.name}</p>
+                    <p className="text-xl font-bold w-full text-left">{data.name}</p>
                     <div className="py-1"></div>
+                    <p className="text-s w-full text-left">Stakee</p>
+                    <p style={{ opacity: 0.5 }}>{data.stakee}</p>
+                    <p className="text-s w-full text-left">Buddy</p>
+                    <p style={{ opacity: 0.5 }}>{data.accountabilityBuddy}</p>
+                    <p className="text-s w-full text-left">Amount Staked</p>
+                    <p style={{ opacity: 0.5 }}>{(data.amountStaked / oneEtherInWei).toString()} ETH</p>
                     <div className="w-full flex flex-col items-center justify-center m-0 p-0">
                         {loading ? (
                             <div className="p-4">
@@ -158,8 +152,8 @@ const StakePage: NextPage = () => {
                     </div>
                     <Toaster />
                 </div>
-                <Footer />
             </main>
+            <Footer />
         </div>
     );
 };
