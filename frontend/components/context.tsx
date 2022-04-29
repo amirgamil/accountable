@@ -3,7 +3,7 @@ import { providers, Signer } from "ethers";
 import { ethers } from "ethers";
 import { ACCOUNTABLE_ABI } from "../abi/accountable";
 import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Context {
     loadWeb3Modal: () => void;
@@ -31,6 +31,8 @@ if (typeof window !== "undefined") {
     });
 }
 
+const NETWORK = process.env.NODE_ENV === "development" ? "unknown" : "optimism-kovan";
+
 export const AppContextProvider = (props: any) => {
     const [signer, setSigner] = React.useState<providers.JsonRpcSigner | undefined>(undefined);
     const [provider, setProvider] = React.useState<providers.Web3Provider | undefined>(undefined);
@@ -39,6 +41,14 @@ export const AppContextProvider = (props: any) => {
 
     const loadWeb3Modal = React.useCallback(async () => {
         const provider = new ethers.providers.Web3Provider(await web3Modal.connect(), "any");
+
+        const network = await provider.getNetwork();
+
+        if (network.name !== NETWORK) {
+            console.log(network.name, NETWORK);
+            toast.error(`Uh oh, looks like you're on the wrong network, please switch to ${NETWORK}`);
+        }
+
         setProvider(provider);
 
         const accountabilityContract = new ethers.Contract(
@@ -82,7 +92,10 @@ export const AppContextProvider = (props: any) => {
                 provider,
             }}
         >
-            <>{props.children}</>
+            <>
+                {props.children}
+                <Toaster />
+            </>
         </AppContext.Provider>
     );
 };

@@ -13,6 +13,7 @@ import { mapArrToStake, oneEtherInWei, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
 import { isEthersError } from "../lib/types";
 import { CHAIN_EXPLORER } from "../lib/defaults";
+import { ethers } from "ethers";
 
 enum ContractMethod {
     MarkSuccessful,
@@ -121,7 +122,7 @@ const StakePage: NextPage = () => {
             } catch (ex: unknown) {
                 setLoading(false);
                 if (isEthersError(ex)) {
-                    const regex = /'(.*?)'/g;
+                    const regex = /execution reverted: (.*?)/g;
                     const matches = regex.exec(ex.data.message);
                     if (matches) {
                         toast.error(`Error: ${matches[1]}`);
@@ -133,6 +134,11 @@ const StakePage: NextPage = () => {
             }
         },
         [context.contract, context.provider, context.signer, id]
+    );
+
+    const amountedStaked = React.useMemo(
+        () => (data ? Number((data.amountStaked.toBigInt() * BigInt(100000000)) / oneEtherInWei) / 100000000 : ""),
+        [data]
     );
 
     if (error) {
@@ -273,7 +279,7 @@ const StakePage: NextPage = () => {
                     <p className="text-s w-full text-left">Buddy</p>
                     <p style={{ opacity: 0.5 }}>{data.accountabilityBuddy}</p>
                     <p className="text-s w-full text-left">Amount Staked</p>
-                    <p style={{ opacity: 0.5 }}>{data.amountStaked.div(oneEtherInWei).toString()} ETH</p>
+                    <p style={{ opacity: 0.5 }}>{amountedStaked} ETH</p>
                     <div className="w-full flex flex-col items-center justify-center m-0 p-0">
                         {loading ? (
                             <div className="p-4">

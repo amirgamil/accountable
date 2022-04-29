@@ -40,4 +40,4 @@ export const mapArrToStake = (arr: any[]): Stake => {
     return stake as Stake;
 };
 
-export const oneEtherInWei = BigNumber.from("1000000000000000000");
+export const oneEtherInWei = BigInt(1000000000000000000);

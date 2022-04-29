@@ -8,6 +8,13 @@ TODO:
 -   [ ] Fuzzing issues revisit?
 -   [ ] Readme
 -   [x] Change state of `Stake` home screen if things look good
+-   [ ] Changing BigNumber div not showing decimal places
+
+-   [ ] Fix on mobile
+
+-   [ ] Change `CHAIN_DEFAULT` to Optimism explorer
+-   [ ] Change address to deployed contract in `context.tsx`
+-   [ ] Change `NETWORK` in context to `optimism`
 
 ## Disclaimer
 

@@ -84,7 +84,7 @@ const Home: NextPage = () => {
             } catch (ex: unknown) {
                 setLoading(false);
                 if (isEthersError(ex)) {
-                    const regex = /'(.*?)'/g;
+                    const regex = /execution reverted: (.*?)/g;
                     const matches = regex.exec(ex.data.message);
                     if (matches) {
                         toast.error(`Error: ${matches[1]}`);
