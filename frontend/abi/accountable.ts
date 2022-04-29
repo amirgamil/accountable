@@ -1,6 +1,20 @@
 export const ACCOUNTABLE_ABI = [
     {
         type: "function",
+        name: "confirmStakeWithBuddy",
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "stakeID",
+                type: "uint256",
+            },
+        ],
+        outputs: [],
+        constant: null,
+        stateMutability: "nonpayable",
+    },
+    {
+        type: "function",
         name: "createNewStake",
         inputs: [
             {
@@ -14,7 +28,13 @@ export const ACCOUNTABLE_ABI = [
                 type: "address",
             },
         ],
-        outputs: [],
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
         constant: null,
         stateMutability: "payable",
     },
@@ -54,7 +74,7 @@ export const ACCOUNTABLE_ABI = [
     },
     {
         type: "function",
-        name: "getStakeFromId",
+        name: "getStakeFromID",
         inputs: [
             {
                 internalType: "uint256",
@@ -284,8 +304,56 @@ export const ACCOUNTABLE_ABI = [
         stateMutability: "view",
     },
     {
+        type: "function",
+        name: "widthrawMoneyBeforeConfirmation",
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "stakeID",
+                type: "uint256",
+            },
+        ],
+        outputs: [],
+        constant: null,
+        stateMutability: "nonpayable",
+    },
+    {
         type: "event",
         name: "NewStakeCreated",
+        inputs: [
+            {
+                name: "name",
+                type: "string",
+                indexed: false,
+            },
+            {
+                name: "id",
+                type: "uint256",
+                indexed: false,
+            },
+        ],
+        anonymous: false,
+    },
+    {
+        type: "event",
+        name: "StakeAborted",
+        inputs: [
+            {
+                name: "name",
+                type: "string",
+                indexed: false,
+            },
+            {
+                name: "id",
+                type: "uint256",
+                indexed: false,
+            },
+        ],
+        anonymous: false,
+    },
+    {
+        type: "event",
+        name: "StakeConfirmed",
         inputs: [
             {
                 name: "name",
@@ -336,8 +404,5 @@ export const ACCOUNTABLE_ABI = [
     },
     {
         type: "receive",
-    },
-    {
-        type: "fallback",
     },
 ];

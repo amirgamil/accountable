@@ -10,6 +10,7 @@ import { StyledInput } from "../components/input";
 import { AppContext } from "../components/context";
 import { ethers } from "ethers";
 import { isEthersError } from "../lib/types";
+import { CHAIN_EXPLORER } from "../lib/defaults";
 
 const Home: NextPage = () => {
     const [accBuddyAddress, setAccBuddyAdddress] = React.useState<string>("");
@@ -29,7 +30,24 @@ const Home: NextPage = () => {
         }
     };
 
-    const createNewStake = async () => {
+    const broadcastTransaction = React.useCallback((hash: string) => {
+        toast.custom(
+            (t) => (
+                <div
+                    style={{ borderRadius: "8px" }}
+                    className={`bg-white px-6 py-4 shadow-md ${t.visible ? "animate-enter" : "animate-leave"}`}
+                >
+                    Transaction broadcasted! View it{" "}
+                    <a className="underline" href={`${CHAIN_EXPLORER}tx/${hash}`}>
+                        here
+                    </a>
+                </div>
+            ),
+            { position: "top-center" }
+        );
+    }, []);
+
+    const createNewStake = React.useCallback(async () => {
         setLoading(true);
         if (accBuddyAddress === "" || amountStaked === "") {
             toast.error("Please fill in all fields");
@@ -48,9 +66,12 @@ const Home: NextPage = () => {
 
                     await contractWithSigner.callStatic.createNewStake(name, accBuddyAddress, overrides);
                     const tx = await contractWithSigner.createNewStake(name, accBuddyAddress, overrides);
+
+                    broadcastTransaction(tx.hash);
+
                     const res = await tx.wait();
-                    console.log(tx, res.events);
                     const event = res.events.find((evt) => evt.transactionHash === tx.hash && evt.args[0] === name);
+
                     if (!event) {
                         throw new Error("Unexpected error occurred");
                     }
@@ -72,8 +93,9 @@ const Home: NextPage = () => {
                 return Promise.reject(ex);
             }
         }
-    };
+    }, [accBuddyAddress, amountStaked, context.contract, context.provider, context.signer, name]);
 
+    const areFieldsFilled = accBuddyAddress && amountStaked;
     return (
         <div className={styles.container}>
             <Head>
@@ -94,7 +116,7 @@ const Home: NextPage = () => {
                             <div>
                                 <div className="flex flex-col">
                                     <StyledInput
-                                        placeholder="Accountability buddy address"
+                                        placeholder="Accountability buddy address (not ENS)"
                                         value={accBuddyAddress}
                                         onChange={(evt) => setAccBuddyAdddress(evt.target.value)}
                                     />
@@ -122,6 +144,9 @@ const Home: NextPage = () => {
                             <div className="w-full flex flex-col items-center justify-center p-0">
                                 <Button
                                     disabled={amountStaked === "" || accBuddyAddress === ""}
+                                    majorColor={areFieldsFilled ? "rgb(235, 179, 235)" : undefined}
+                                    hoverColor={areFieldsFilled ? "rgb(228, 204, 228)" : undefined}
+                                    textColor={"white"}
                                     onClick={createNewStake}
                                 >
                                     Stake
@@ -133,9 +158,16 @@ const Home: NextPage = () => {
                             <p className="text-xl font-semibold">Success!</p>
                             <p>
                                 Your stake&apos;s ID is <strong>{successId}</strong> and will live{" "}
-                                <a href={`/stake?id=${successId}`}>here</a>. Save the link or remember the ID. <br></br>
+                                <a href={`/stake?id=${successId}`}>here</a>. Save the link or remember the ID.
                                 <br></br>
-                                Your accountability buddy will be able to mark the task as a success or a failure there.
+                                <br></br>
+                                Your accountability buddy will be able to confirm the stake, then mark the task as a
+                                success or a failure there. If you incorrectly typed your buddy&apos;s address, you can
+                                quickly withdraw your money back before they confirm it by aborting the stake.
+                                <br></br>
+                                <br></br>
+                                If it looks correct, have your buddy confirm the stake to lock your money in the
+                                contract until you complete/fail the agreed on task.
                             </p>
                         </div>
                     )}

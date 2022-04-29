@@ -20,13 +20,13 @@
     word-wrap: break-word;
 }
 
-@media screen and (min-width: 460px) {
+@media screen and (min-width: 600px) {
     .center {
-        width: 400px;
+        width: 500px;
     }
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 600px) {
     .center {
         max-width: 400px;
     }

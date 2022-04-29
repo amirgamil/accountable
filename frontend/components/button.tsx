@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
-export const Container = styled.div<{ majorColor?: string; hoverColor?: string }>`
+export const Container = styled.div<{ majorColor?: string; hoverColor?: string; textColor?: string }>`
     button {
         border: none;
+        color: ${(p) => (p.textColor ? p.textColor : "black")};
         &:hover {
             transition: 0.3s;
             background: ${(p) => (p.hoverColor ? p.hoverColor : "rgb(230, 145, 230)")};
@@ -23,11 +24,17 @@ interface Props {
     disabled?: boolean;
     majorColor?: string;
     hoverColor?: string;
+    textColor?: string;
 }
 
-export const Button: React.FC<Props> = ({ onClick, children, disabled, majorColor, hoverColor }: Props) => {
+export const Button: React.FC<Props> = ({ onClick, children, disabled, majorColor, hoverColor, textColor }: Props) => {
     return (
-        <Container hoverColor={hoverColor} majorColor={majorColor} className="my-2 w-full flex justify-center z-40">
+        <Container
+            textColor={textColor}
+            hoverColor={hoverColor}
+            majorColor={majorColor}
+            className="my-2 w-full flex justify-center z-40"
+        >
             <button disabled={disabled} onClick={onClick} className="border p-3 w-full">
                 {children}
             </button>

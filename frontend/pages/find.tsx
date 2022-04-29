@@ -21,7 +21,7 @@ const StakePage: NextPage = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const { isLoading, error, data } = useQuery<Stake[] | undefined>(
-        "stake",
+        "stakeList",
         async () => {
             if (context.contract) {
                 const dataResult = await context.contract.getAllStakes();
@@ -45,7 +45,7 @@ const StakePage: NextPage = () => {
     }
 
     //FIXME: prompt to sign in with wallet if not signed in instead of just showing loading screen
-    if (isLoading || !context.contract || !data || !Array.isArray(data)) {
+    if (isLoading || !context.contract || !data) {
         return (
             <div className={styles.container}>
                 <main className={styles.main}>

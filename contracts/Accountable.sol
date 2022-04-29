@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+//SPDX-License-IDentifier: MIT
 pragma solidity ^0.8.10;
 
 /******************************************************************************
@@ -74,9 +74,14 @@ contract Accountable is ReentrancyGuard {
 
     // fallback() external payable {}
 
-    modifier validStakeID(uint256 stakeID) {
+    modifier validPendingStakeID(uint256 stakeID) {
         require(stakeID < stakes.length, "Invalid id provided");
         require(stakes[stakeID].status == Status.Pending, "Stake has not been confirmed yet or was already completed.");
+        _;
+    }
+    modifier validUnconfirmedStakeID(uint256 stakeID) {
+        require(stakeID < stakes.length, "Invalid id provided");
+        require(stakes[stakeID].status == Status.Unconfirmed, "Stake has already been confirmed");
         _;
     }
 
@@ -84,7 +89,7 @@ contract Accountable is ReentrancyGuard {
         return stakes;
     }
 
-    function getStakeFromId(uint256 stakeID) public view returns (Stake memory) {
+    function getStakeFromID(uint256 stakeID) public view returns (Stake memory) {
         require(stakeID < stakes.length);
         return stakes[stakeID];
     }
@@ -94,7 +99,7 @@ contract Accountable is ReentrancyGuard {
         uint256[] storage ids = stakeIDsForStakeeAddress[msg.sender];
         Stake[] memory currStakes = new Stake[](ids.length);
         for (uint i = 0; i < ids.length; i++) {
-            currStakes[i] = getStakeFromId(ids[i]);
+            currStakes[i] = getStakeFromID(ids[i]);
         }
         return currStakes;
     }
@@ -103,7 +108,7 @@ contract Accountable is ReentrancyGuard {
         uint256[] storage ids = stakeIDsForAccountabilityAddress[msg.sender];
         Stake[] memory currStakes = new Stake[](ids.length);
         for (uint i = 0; i < ids.length; i++) {
-            currStakes[i] = getStakeFromId(ids[i]);
+            currStakes[i] = getStakeFromID(ids[i]);
         }
         return currStakes;
     }
@@ -112,7 +117,7 @@ contract Accountable is ReentrancyGuard {
         require(msg.value > 0, "Must stake non-zero amount of ether");
         require(accountabilityBuddy != msg.sender, "Must assign someone else as accountability buddy");
         
-        Stake memory newStake = Stake({stakee: msg.sender, name: name, amountStaked: msg.value, accountabilityBuddy: accountabilityBuddy, id: stakes.length, status: Status.Pending});
+        Stake memory newStake = Stake({stakee: msg.sender, name: name, amountStaked: msg.value, accountabilityBuddy: accountabilityBuddy, id: stakes.length, status: Status.Unconfirmed});
         stakes.push(newStake);
 
         stakeIDsForStakeeAddress[msg.sender].push(stakes.length - 1);
@@ -123,18 +128,16 @@ contract Accountable is ReentrancyGuard {
         return stakes.length - 1;
     }
 
-    function confirmStakeWithBuddy(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+    function confirmStakeWithBuddy(uint256 stakeID) external validUnconfirmedStakeID(stakeID) nonReentrant {
         require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can confirm a stake");
-        require(stakes[stakeID].status != Status.Unconfirmed, "Stake has already been confirmed");
-
+        
         stakes[stakeID].status = Status.Pending;
 
         emit StakeConfirmed(stakes[stakeID].name, stakeID);
     }
 
-    function widthrawMoneyBeforeConfirmation(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
-        require(stakes[stakeID].stakee == msg.sender);
-        require(stakes[stakeID].status == Status.Unconfirmed, "Cannot withdraw money for a stake that has already been confirmed");
+    function widthrawMoneyBeforeConfirmation(uint256 stakeID) external validUnconfirmedStakeID(stakeID) nonReentrant {
+        require(stakes[stakeID].stakee == msg.sender, "Only the stakee can withdraw money before confirmation");
 
         //transfer funds to the stakee
         (bool success, ) = stakes[stakeID].stakee.call{value: stakes[stakeID].amountStaked }("");
@@ -147,7 +150,7 @@ contract Accountable is ReentrancyGuard {
 
     //@notice, upon successful completion of the agreed upon task/goal/whatever, the accountability buddy
     //marks the stake as successful for the money to be transferred back to the stakee.
-    function markStakeSuccessful(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+    function markStakeSuccessful(uint256 stakeID) external validPendingStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
         require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as successful");
 
@@ -160,9 +163,9 @@ contract Accountable is ReentrancyGuard {
         emit StakeSuccessful(stakes[stakeID].name, stakeID);
     }
 
-    function markStakeFailed(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+    function markStakeFailed(uint256 stakeID) external validPendingStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
-        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as failed");
 
         //transfer funds to the stakee
         (bool success, ) = stakes[stakeID].accountabilityBuddy.call{value: stakes[stakeID].amountStaked}("");

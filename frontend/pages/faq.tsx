@@ -50,17 +50,45 @@ const Home: NextPage = () => {
                                 </>
                             }
                         />
+                        <div className="py-4"></div>
+                        <Question
+                            question={"How do I use it?"}
+                            answer={
+                                <>
+                                    If you want to create a stake to stay accountable: <br></br>
+                                    1. navigate to <a href="/">stake</a> <br></br>
+                                    2. enter your accountability buddy address (who you trust), a name, and the amount
+                                    to stake <br></br>
+                                    3. click &quot;stake&quot; <br></br>
+                                    4. wait for the stake to be processed and the stake id to be generated <br></br>
+                                    5. navigate to
+                                    <p className="underline">keepmeaccountable.xyz/stake?id=[stake id]</p> If you
+                                    entered the wrong buddy address, you can recover your deposited funds by aborting
+                                    stake. Otherwise, have your budy <strong>confirm</strong> to lock your money in the
+                                    contract. <strong>You the stakee will not be able to recover the funds now.</strong>{" "}
+                                    <br></br>
+                                    6. upon completion or failure, the accountability buddy will mark the task as
+                                    successful (✓) or failed (✗) to return your money or take the money respectively.
+                                </>
+                            }
+                        />
 
                         <div className="py-4"></div>
                         <Question
                             question={"Do I have to pay anything to use this tool?"}
                             answer={
                                 <>
-                                    This tool is completely free to use minus gas fees. You the stakee pay gas fees to
-                                    create a new stake and the accountability partner pays gas to mark a stake as failed
-                                    or successful. Since the tool is deployed on{" "}
-                                    <a href="https://www.optimism.io/">Optimism</a> (an L2 Rollup on Ethereum), gas fees
-                                    should be very low (less than $0.01) but that is the price of real accountability :)
+                                    This tool is completely free to use minus gas fees.
+                                    <br></br>
+                                    <br></br>
+                                    You the stakee pay gas fees to create a new stake and the accountability partner
+                                    pays gas to confirm the stake and mark a stake as failed or successful. If you abort
+                                    the stake before it&apos;s confirmed, you (the stakee) also have to pay gas.
+                                    <br></br>
+                                    <br></br>
+                                    Since the tool is deployed on <a href="https://www.optimism.io/">Optimism</a> (an L2
+                                    Rollup on Ethereum), gas fees should be very low (less than $0.01) but that is the
+                                    price of real accountability :)
                                 </>
                             }
                         />
