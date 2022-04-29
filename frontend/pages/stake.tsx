@@ -273,7 +273,7 @@ const StakePage: NextPage = () => {
                     <p className="text-s w-full text-left">Buddy</p>
                     <p style={{ opacity: 0.5 }}>{data.accountabilityBuddy}</p>
                     <p className="text-s w-full text-left">Amount Staked</p>
-                    <p style={{ opacity: 0.5 }}>{(data.amountStaked / oneEtherInWei).toString()} ETH</p>
+                    <p style={{ opacity: 0.5 }}>{data.amountStaked.div(oneEtherInWei).toString()} ETH</p>
                     <div className="w-full flex flex-col items-center justify-center m-0 p-0">
                         {loading ? (
                             <div className="p-4">

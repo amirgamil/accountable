@@ -25,7 +25,7 @@ const StakePage: NextPage = () => {
         async () => {
             if (context.contract) {
                 const dataResult = await context.contract.getAllStakes();
-                return dataResult.map((el) => mapArrToStake(el));
+                return dataResult.map((el: any[]) => mapArrToStake(el));
             }
         },
         { retry: 1, enabled: contractExists }

@@ -4,7 +4,7 @@ export const Footer = () => {
             <div className="h-5 flex justify-center text-lg">
                 <i className="opacity-60">
                     A{" "}
-                    <a className="underline underline-offset-2 " href="https://github.com/amirgamil/thalia">
+                    <a className="underline underline-offset-2 " href="https://github.com/amirgamil/accountable">
                         project
                     </a>{" "}
                     by{" "}

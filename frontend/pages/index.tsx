@@ -70,7 +70,9 @@ const Home: NextPage = () => {
                     broadcastTransaction(tx.hash);
 
                     const res = await tx.wait();
-                    const event = res.events.find((evt) => evt.transactionHash === tx.hash && evt.args[0] === name);
+                    const event = res.events.find(
+                        (evt: any) => evt.transactionHash === tx.hash && evt.args[0] === name
+                    );
 
                     if (!event) {
                         throw new Error("Unexpected error occurred");

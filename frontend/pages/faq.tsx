@@ -5,6 +5,7 @@ import styles from "../styles/Home.module.css";
 import { Nav } from "../components/nav";
 import { Footer } from "../components/footer";
 import { Question } from "../components/question";
+import Link from "next/link";
 
 const Home: NextPage = () => {
     return (
@@ -29,8 +30,8 @@ const Home: NextPage = () => {
                                 <>
                                     This is a tool that keeps you accountable by putting your money where your mouth is.
                                     You pick an accountability partner, <strong>someone who you trust</strong> and
-                                    deposit some money into the contract (or "stake it"). This locks your money in the
-                                    contract.
+                                    deposit some money into the contract (or &quot;stake it&quot;). This locks your
+                                    money in the contract.
                                     <br></br>
                                     <br></br>
                                     If you successfully complete the agreed upon task (by agreed on date), your
@@ -56,7 +57,7 @@ const Home: NextPage = () => {
                             answer={
                                 <>
                                     If you want to create a stake to stay accountable: <br></br>
-                                    1. navigate to <a href="/">stake</a> <br></br>
+                                    1. navigate to <Link href="/">stake</Link> <br></br>
                                     2. enter your accountability buddy address (who you trust), a name, and the amount
                                     to stake <br></br>
                                     3. click &quot;stake&quot; <br></br>

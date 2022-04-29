@@ -10,7 +10,7 @@ export const ACCOUNTABLE_ABI = [
             },
         ],
         outputs: [],
-        constant: null,
+        constant: undefined,
         stateMutability: "nonpayable",
     },
     {
@@ -35,7 +35,7 @@ export const ACCOUNTABLE_ABI = [
                 type: "uint256",
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "payable",
     },
     {
@@ -69,7 +69,7 @@ export const ACCOUNTABLE_ABI = [
                 ],
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -109,7 +109,7 @@ export const ACCOUNTABLE_ABI = [
                 ],
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -143,7 +143,7 @@ export const ACCOUNTABLE_ABI = [
                 ],
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -177,7 +177,7 @@ export const ACCOUNTABLE_ABI = [
                 ],
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -222,7 +222,7 @@ export const ACCOUNTABLE_ABI = [
                 type: "uint256",
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -236,7 +236,7 @@ export const ACCOUNTABLE_ABI = [
             },
         ],
         outputs: [],
-        constant: null,
+        constant: undefined,
         stateMutability: "nonpayable",
     },
     {
@@ -250,7 +250,7 @@ export const ACCOUNTABLE_ABI = [
             },
         ],
         outputs: [],
-        constant: null,
+        constant: undefined,
         stateMutability: "nonpayable",
     },
     {
@@ -275,7 +275,7 @@ export const ACCOUNTABLE_ABI = [
                 type: "uint256",
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -300,7 +300,7 @@ export const ACCOUNTABLE_ABI = [
                 type: "uint256",
             },
         ],
-        constant: null,
+        constant: undefined,
         stateMutability: "view",
     },
     {
@@ -314,7 +314,7 @@ export const ACCOUNTABLE_ABI = [
             },
         ],
         outputs: [],
-        constant: null,
+        constant: undefined,
         stateMutability: "nonpayable",
     },
     {
