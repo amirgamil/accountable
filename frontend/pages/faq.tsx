@@ -33,8 +33,8 @@ const Home: NextPage = () => {
                                     contract.
                                     <br></br>
                                     <br></br>
-                                    If you successfully complete the agreed upon task, your accountability partner marks
-                                    the task as successful and you get your money back.
+                                    If you successfully complete the agreed upon task (by agreed on date), your
+                                    accountability partner marks the task as successful and you get your money back.
                                     <br></br>
                                     <br></br>
                                     If you fail, they mark it as failed and the accountability partner gets your money.

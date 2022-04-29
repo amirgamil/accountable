@@ -21,8 +21,9 @@ const StakePage: NextPage = () => {
     const contractExists = context.contract !== undefined;
 
     const [loading, setLoading] = React.useState<boolean>(false);
+    const [pollCounter, setPollCounter] = React.useState<number>(0);
 
-    const { isLoading, error, data } = useQuery<Stake | undefined>(
+    const { isLoading, error, data, refetch } = useQuery<Stake | undefined>(
         "stake",
         async () => {
             if (context.contract && id !== undefined) {
@@ -32,6 +33,17 @@ const StakePage: NextPage = () => {
         },
         { retry: 1, enabled: contractExists }
     );
+
+    React.useEffect(() => {
+        if (data && data.status !== 0) {
+            setLoading(false);
+        } else {
+            setTimeout(async () => {
+                await refetch();
+                setPollCounter(pollCounter + 1);
+            }, 1000);
+        }
+    }, [data, pollCounter]);
 
     if (error) {
         return (
@@ -79,7 +91,7 @@ const StakePage: NextPage = () => {
                     tx = await contractWithSigner.markStakeFailed(id);
                 }
                 await tx.wait();
-                setLoading(false);
+                setPollCounter(1);
             }
         } catch (ex: unknown) {
             setLoading(false);

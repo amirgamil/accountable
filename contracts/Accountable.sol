@@ -1,15 +1,37 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
+/******************************************************************************
+******************************************************************************
+******************************************************************************
+   _____                                   __        ___.   .__          
+  /  _  \   ____  ____  ____  __ __  _____/  |______ \_ |__ |  |   ____  
+ /  /_\  \_/ ___\/ ___\/  _ \|  |  \/    \   __\__  \ | __ \|  | _/ __ \ 
+/    |    \  \__\  \__(  <_> )  |  /   |  \  |  / __ \| \_\ \  |_\  ___/ 
+\____|__  /\___  >___  >____/|____/|___|  /__| (____  /___  /____/\___  >
+        \/     \/    \/                 \/          \/    \/          \/ 
+******************************************************************************
+******************************************************************************
+******************************************************************************/
+
 import "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
-// import "forge-std/console.sol";
 
 contract Accountable is ReentrancyGuard {
     // Enum representing status of a stake 
+    // Pending = stake has been confirmed and is in progress
+    // Success = stake has been completed successfully
+    // Failure = stake was marked as failed
+    // Unconfirmed = stake has been created by stakee but not yet confirmed by the accountability buddy. 
+    //               This state is mainly to guard against entering incorrectly entering your accountability
+    //               buddy's address, and lets you withdraw your money
+    // Aborted = stake was aborted by the stakee and funds were sent back to the stakee before. Stake was never
+    //           confirmed by accountability buddy. 
     enum Status {
         Pending, 
         Success,
-        Failure
+        Failure,
+        Unconfirmed,
+        Aborted
     }
 
     //represents a single stake made by a stakee 
@@ -40,6 +62,13 @@ contract Accountable is ReentrancyGuard {
     //@notice, if a stake is successfully unsuccessfully (i.e. the stakee did not accomplish 
     //the agreed upon goal), the accountabilityBuddy gets the amountStaked back.
     event StakeFailed(string name, uint id);
+    //@notice, marks when a stake is confirmed by the accountability buddy and the stakee can no longer withdraw
+    //the money
+    event StakeConfirmed(string name, uint id);
+    //@notice if a stake is aborted and the stakee withdraws the money before the accountability buddy
+    //confirms the stake
+    event StakeAborted(string name, uint id);
+
 
     receive() external payable {}
 
@@ -47,7 +76,7 @@ contract Accountable is ReentrancyGuard {
 
     modifier validStakeID(uint256 stakeID) {
         require(stakeID < stakes.length, "Invalid id provided");
-        require(stakes[stakeID].status == Status.Pending, "Stake is not pending");
+        require(stakes[stakeID].status == Status.Pending, "Stake has not been confirmed yet or was already completed.");
         _;
     }
 
@@ -62,7 +91,7 @@ contract Accountable is ReentrancyGuard {
 
     //gets all stakes for a given stakee address
     function getStakesForStakeeAddress() public view returns (Stake[] memory) {
-        uint256[] memory ids = stakeIDsForStakeeAddress[msg.sender];
+        uint256[] storage ids = stakeIDsForStakeeAddress[msg.sender];
         Stake[] memory currStakes = new Stake[](ids.length);
         for (uint i = 0; i < ids.length; i++) {
             currStakes[i] = getStakeFromId(ids[i]);
@@ -71,7 +100,7 @@ contract Accountable is ReentrancyGuard {
     }
 
     function getStakesForAccountabilityAddress() public view returns (Stake[] memory) {
-        uint256[] memory ids = stakeIDsForAccountabilityAddress[msg.sender];
+        uint256[] storage ids = stakeIDsForAccountabilityAddress[msg.sender];
         Stake[] memory currStakes = new Stake[](ids.length);
         for (uint i = 0; i < ids.length; i++) {
             currStakes[i] = getStakeFromId(ids[i]);
@@ -94,6 +123,28 @@ contract Accountable is ReentrancyGuard {
         return stakes.length - 1;
     }
 
+    function confirmStakeWithBuddy(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can confirm a stake");
+        require(stakes[stakeID].status != Status.Unconfirmed, "Stake has already been confirmed");
+
+        stakes[stakeID].status = Status.Pending;
+
+        emit StakeConfirmed(stakes[stakeID].name, stakeID);
+    }
+
+    function widthrawMoneyBeforeConfirmation(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
+        require(stakes[stakeID].stakee == msg.sender);
+        require(stakes[stakeID].status == Status.Unconfirmed, "Cannot withdraw money for a stake that has already been confirmed");
+
+        //transfer funds to the stakee
+        (bool success, ) = stakes[stakeID].stakee.call{value: stakes[stakeID].amountStaked }("");
+
+        require(success, "Failed to send Ether to Stakee");
+        stakes[stakeID].status = Status.Aborted;
+
+        emit StakeAborted(stakes[stakeID].name, stakeID);
+    }
+
     //@notice, upon successful completion of the agreed upon task/goal/whatever, the accountability buddy
     //marks the stake as successful for the money to be transferred back to the stakee.
     function markStakeSuccessful(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
@@ -101,7 +152,7 @@ contract Accountable is ReentrancyGuard {
         require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as successful");
 
         //transfer funds to the stakee
-        (bool success, ) = payable(stakes[stakeID].stakee).call{value: stakes[stakeID].amountStaked }("");
+        (bool success, ) = stakes[stakeID].stakee.call{value: stakes[stakeID].amountStaked }("");
 
         require(success, "Failed to send Ether to Stakee");
         stakes[stakeID].status = Status.Success;
@@ -112,10 +163,9 @@ contract Accountable is ReentrancyGuard {
     function markStakeFailed(uint256 stakeID) external validStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
         require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake failed");
-        require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as failed");
 
         //transfer funds to the stakee
-        (bool success, ) = payable(stakes[stakeID].accountabilityBuddy).call{value: stakes[stakeID].amountStaked}("");
+        (bool success, ) = stakes[stakeID].accountabilityBuddy.call{value: stakes[stakeID].amountStaked}("");
 
         require(success, "Failed to send Ether to Accountability Buddy");
         stakes[stakeID].status = Status.Failure;

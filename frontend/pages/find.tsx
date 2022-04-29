@@ -4,16 +4,13 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { Nav } from "../components/nav";
 import { Footer } from "../components/footer";
-import { Button } from "../components/button";
 import { useAppContext } from "../components/context";
 import { useQuery } from "react-query";
-import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
 import { mapArrToStake, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
-import { isEthersError } from "../lib/types";
 import { StyledInput } from "../components/input";
-import { StakeField } from "../components/StakeField";
+import { StakeField } from "../components/stakeField";
 
 const StakePage: NextPage = () => {
     const context = useAppContext();
@@ -48,7 +45,7 @@ const StakePage: NextPage = () => {
     }
 
     //FIXME: prompt to sign in with wallet if not signed in instead of just showing loading screen
-    if (isLoading || !context.contract || !data) {
+    if (isLoading || !context.contract || !data || !Array.isArray(data)) {
         return (
             <div className={styles.container}>
                 <main className={styles.main}>

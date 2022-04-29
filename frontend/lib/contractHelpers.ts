@@ -12,7 +12,6 @@ export interface Stake {
 }
 
 export const mapArrToStake = (arr: any[]): Stake => {
-    console.log(arr);
     const stake: any = {};
     if (typeof arr[0] === "string") {
         stake.stakee = arr[0];
