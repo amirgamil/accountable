@@ -11,6 +11,7 @@ import { AppContext } from "../components/context";
 import { ethers } from "ethers";
 import { isEthersError } from "../lib/types";
 import { CHAIN_EXPLORER } from "../lib/defaults";
+import Link from "next/link";
 
 const Home: NextPage = () => {
     const [accBuddyAddress, setAccBuddyAdddress] = React.useState<string>("");
@@ -69,7 +70,9 @@ const Home: NextPage = () => {
 
                     broadcastTransaction(tx.hash);
 
+                    console.log(loading);
                     const res = await tx.wait();
+                    console.log(loading);
                     const event = res.events.find(
                         (evt: any) => evt.transactionHash === tx.hash && evt.args[0] === name
                     );
@@ -109,11 +112,15 @@ const Home: NextPage = () => {
             <Nav />
             <main className={styles.main}>
                 <div className={styles.center}>
+                    <div className={styles.mobileNotifier}>
+                        Unfortunately, this is not available on mobile, please try it on a laptop! Feel free to read the{" "}
+                        <Link href="/faq">FAQ</Link> while you&apos;re here
+                    </div>
                     {!successId ? (
-                        <div>
+                        <div className={styles.window}>
                             <p className="text-xl font-semibold">Keep me accountable</p>
                             <div className="py-1"></div>
-                            <p className="text-s">Put your money where your mouth is. Literally.</p>
+                            <p className="text-s">Stay accountable by putting your money on the line. Literally.</p>
                             <div className="py-4"></div>
                             <div>
                                 <div className="flex flex-col">

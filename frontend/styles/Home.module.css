@@ -20,15 +20,27 @@
     word-wrap: break-word;
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 520px) {
     .center {
         width: 500px;
     }
+
+    .mobileNotifier {
+        display: none;
+    }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 520px) {
     .center {
         max-width: 400px;
+    }
+
+    .window {
+        display: none;
+    }
+
+    .mobileNotifier {
+        display: block;
     }
 }
 

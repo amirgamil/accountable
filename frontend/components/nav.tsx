@@ -3,6 +3,7 @@ import router from "next/router";
 import * as React from "react";
 import styled from "styled-components";
 import { useAppContext } from "./context";
+import styles from "../styles/Home.module.css";
 
 const Container = styled.div`
     button:hover {
@@ -18,12 +19,25 @@ export const Nav = () => {
     };
 
     return (
-        <div className="relative opacity-80 w-full z-40">
+        <div className={`relative opacity-80 w-full z-40 ${styles.window}`}>
             <div className="relative w-full pt-8 h-26 flex text-white">
                 <div className="ml-auto my-auto mr-16">
                     <Container>
                         {context.address && (
                             <>
+                                <Link href={`/find`}>
+                                    <button
+                                        style={{
+                                            background: "white",
+                                            padding: "10px",
+                                            borderRadius: "12px",
+                                            margin: "0 10px 10px 10px",
+                                        }}
+                                        className="button secondary mr-4"
+                                    >
+                                        Contract
+                                    </button>
+                                </Link>
                                 <Link href={`/find`}>
                                     <button
                                         style={{

@@ -14,6 +14,7 @@ import { Spinner } from "../components/spinner";
 import { isEthersError } from "../lib/types";
 import { CHAIN_EXPLORER } from "../lib/defaults";
 import { ethers } from "ethers";
+import Link from "next/link";
 
 enum ContractMethod {
     MarkSuccessful,
@@ -272,22 +273,28 @@ const StakePage: NextPage = () => {
             <Nav />
             <main className={styles.main}>
                 <div style={{ background: colorBasedOnState }} className={styles.center}>
-                    <p className="text-xl font-bold w-full text-left">{data.name}</p>
-                    <div className="py-1"></div>
-                    <p className="text-s w-full text-left">Stakee</p>
-                    <p style={{ opacity: 0.5 }}>{data.stakee}</p>
-                    <p className="text-s w-full text-left">Buddy</p>
-                    <p style={{ opacity: 0.5 }}>{data.accountabilityBuddy}</p>
-                    <p className="text-s w-full text-left">Amount Staked</p>
-                    <p style={{ opacity: 0.5 }}>{amountedStaked} ETH</p>
-                    <div className="w-full flex flex-col items-center justify-center m-0 p-0">
-                        {loading ? (
-                            <div className="p-4">
-                                <Spinner />
-                            </div>
-                        ) : (
-                            currentStep
-                        )}
+                    <div className={styles.mobileNotifier}>
+                        Unfortunately, this is not available on mobile, please try it on a laptop! Feel free to read the{" "}
+                        <Link href="/faq">FAQ</Link> while you&apos;re here
+                    </div>
+                    <div className={styles.window}>
+                        <p className="text-xl font-bold w-full text-left">{data.name}</p>
+                        <div className="py-1"></div>
+                        <p className="text-s w-full text-left">Stakee</p>
+                        <p style={{ opacity: 0.5 }}>{data.stakee}</p>
+                        <p className="text-s w-full text-left">Buddy</p>
+                        <p style={{ opacity: 0.5 }}>{data.accountabilityBuddy}</p>
+                        <p className="text-s w-full text-left">Amount Staked</p>
+                        <p style={{ opacity: 0.5 }}>{amountedStaked} ETH</p>
+                        <div className="w-full flex flex-col items-center justify-center m-0 p-0">
+                            {loading ? (
+                                <div className="p-4">
+                                    <Spinner />
+                                </div>
+                            ) : (
+                                currentStep
+                            )}
+                        </div>
                     </div>
                     <Toaster />
                 </div>

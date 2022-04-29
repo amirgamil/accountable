@@ -10,12 +10,13 @@ TODO:
 -   [x] Change state of `Stake` home screen if things look good
 -   [x] Changing BigNumber div not showing decimal places
 
--   [ ] Fix on mobile
+-   [x] Fix on mobile
 -   [ ] Update gas snapshots
 
 -   [ ] Change `CHAIN_DEFAULT` to Optimism explorer
 -   [ ] Change address to deployed contract in `context.tsx`
 -   [ ] Change `NETWORK` in context to `optimism`
+-   [ ] Add deployed contract address to etherscan
 
 ## Disclaimer
 

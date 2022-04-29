@@ -11,6 +11,7 @@ import { mapArrToStake, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
 import { StyledInput } from "../components/input";
 import { StakeField } from "../components/stakeField";
+import Link from "next/link";
 
 const StakePage: NextPage = () => {
     const context = useAppContext();
@@ -82,30 +83,36 @@ const StakePage: NextPage = () => {
             <Nav />
             <main className={styles.main}>
                 <div style={{ background: "white" }} className={styles.center}>
-                    <StyledInput
-                        className="w-full"
-                        placeholder="Filter by name, stakee, or buddy"
-                        value={searchResult}
-                        onChange={(evt) => setSearchResult(evt.target.value)}
-                    />
-                    {!searchResult && (
-                        <>
-                            <div className="py-3"></div>
-                            <p>
-                                To filter by name, just enter the name. To filter by stakee, type{" "}
-                                <strong>stakee:[addr]</strong> and by buddy, <strong>buddy: [addr]</strong>
-                            </p>
-                        </>
-                    )}
-                    {filteredResults?.map((el, i) => (
-                        <StakeField
-                            key={i}
-                            name={el.name}
-                            id={el.id}
-                            accountabilityBuddy={el.accountabilityBuddy}
-                            stakeeAddress={el.stakee}
+                    <div className={styles.mobileNotifier}>
+                        Unfortunately, this is not available on mobile, please try it on a laptop! Feel free to read the{" "}
+                        <Link href="/faq">FAQ</Link> while you&apos;re here
+                    </div>
+                    <div className={styles.window}>
+                        <StyledInput
+                            className="w-full"
+                            placeholder="Filter by name, stakee, or buddy"
+                            value={searchResult}
+                            onChange={(evt) => setSearchResult(evt.target.value)}
                         />
-                    ))}
+                        {!searchResult && (
+                            <>
+                                <div className="py-3"></div>
+                                <p>
+                                    To filter by name, just enter the name. To filter by stakee, type{" "}
+                                    <strong>stakee:[addr]</strong> and by buddy, <strong>buddy: [addr]</strong>
+                                </p>
+                            </>
+                        )}
+                        {filteredResults?.map((el, i) => (
+                            <StakeField
+                                key={i}
+                                name={el.name}
+                                id={el.id}
+                                accountabilityBuddy={el.accountabilityBuddy}
+                                stakeeAddress={el.stakee}
+                            />
+                        ))}
+                    </div>
                     <Toaster />
                 </div>
             </main>

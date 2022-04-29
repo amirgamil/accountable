@@ -1,1 +1,5 @@
-testStakeCreation() (gas: 184643)
+testFailStake0() (gas: 2900)
+testFailStrangerAbortStake() (gas: 192153)
+testFailStrangerConfirmStake() (gas: 192176)
+testStakeCreation() (gas: 185457)
+testSuccessfulConfirmStake() (gas: 202756)

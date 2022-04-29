@@ -22,23 +22,27 @@ const Home: NextPage = () => {
                     <div>
                         <p className="text-xl font-semibold">Keep me accountable</p>
                         <div className="py-1"></div>
-                        <p className="text-s">Put your money where your mouth is. Literally.</p>
+                        <p className="text-s">Stay accountable by putting your money on the line. Literally.</p>
                         <div className="py-4"></div>
                         <Question
                             question={"WTF is this?"}
                             answer={
                                 <>
-                                    This is a tool that keeps you accountable by putting your money where your mouth is.
-                                    You pick an accountability partner, <strong>someone who you trust</strong> and
-                                    deposit some money into the contract (or &quot;stake it&quot;). This locks your
-                                    money in the contract.
+                                    This is a tool that keeps you accountable by putting your money on the line. You
+                                    pick an accountability partner, <strong>someone who you trust</strong> and deposit
+                                    some money into the contract (or &quot;stake it&quot;). This locks your money in the
+                                    contract.
                                     <br></br>
                                     <br></br>
                                     If you successfully complete the agreed upon task (by agreed on date), your
                                     accountability partner marks the task as successful and you get your money back.
                                     <br></br>
                                     <br></br>
-                                    If you fail, they mark it as failed and the accountability partner gets your money.
+                                    If you fail, they mark it as failed and your money gets{" "}
+                                    <strong>
+                                        donated directly to{" "}
+                                        <Link href="https://www.khanacademy.org/">Khan Academy</Link>.
+                                    </strong>{" "}
                                     In other words, the tool is a forcing function to get something done and keep you
                                     accountable by <strong>actually putting money on the line</strong>.<br></br>
                                     <br></br>
@@ -46,8 +50,8 @@ const Home: NextPage = () => {
                                     <p className="underline">keepmeaccountable.xyz/stake?id=[stake id]</p>
                                     <br></br>
                                     Because of this, the accountability partner{" "}
-                                    <strong>must be someone who you trust</strong> and will not maliciously take your
-                                    money.
+                                    <strong>should be someone who you trust</strong>. Fortunately, there is no incentive
+                                    for an accountability buddy to be dishonest.
                                 </>
                             }
                         />

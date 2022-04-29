@@ -34,6 +34,9 @@ contract Accountable is ReentrancyGuard {
         Aborted
     }
 
+    //Khan Academy address according to https://www.khanacademy.org/donate (scroll to FAQ)
+    address public constant KHAN_ACADEMY_ADDRESS = 0x95a647B3d8a3F11176BAdB799b9499C671fa243a;
+
     //represents a single stake made by a stakee 
     struct Stake {
         //person who is staking their money to the contract
@@ -60,7 +63,7 @@ contract Accountable is ReentrancyGuard {
     //the agreed upon goal)
     event StakeSuccessful(string name, uint id);
     //@notice, if a stake is successfully unsuccessfully (i.e. the stakee did not accomplish 
-    //the agreed upon goal), the accountabilityBuddy gets the amountStaked back.
+    //the agreed upon goal), the money gets donated to Khan Academy
     event StakeFailed(string name, uint id);
     //@notice, marks when a stake is confirmed by the accountability buddy and the stakee can no longer withdraw
     //the money
@@ -71,8 +74,6 @@ contract Accountable is ReentrancyGuard {
 
 
     receive() external payable {}
-
-    // fallback() external payable {}
 
     modifier validPendingStakeID(uint256 stakeID) {
         require(stakeID < stakes.length, "Invalid id provided");
@@ -163,12 +164,13 @@ contract Accountable is ReentrancyGuard {
         emit StakeSuccessful(stakes[stakeID].name, stakeID);
     }
 
+    //@notice, if a stake is marked as failed, stakee's money gets donated directly to Khan Academy
     function markStakeFailed(uint256 stakeID) external validPendingStakeID(stakeID) nonReentrant {
         //ensure accountability buddy
         require(stakes[stakeID].accountabilityBuddy == msg.sender, "Only the accountability buddy can mark a stake as failed");
 
         //transfer funds to the stakee
-        (bool success, ) = stakes[stakeID].accountabilityBuddy.call{value: stakes[stakeID].amountStaked}("");
+        (bool success, ) = KHAN_ACADEMY_ADDRESS.call{value: stakes[stakeID].amountStaked}("");
 
         require(success, "Failed to send Ether to Accountability Buddy");
         stakes[stakeID].status = Status.Failure;
