@@ -54,7 +54,7 @@ export const AppContextProvider = (props: any) => {
         const accountabilityContract = new ethers.Contract(
             process.env.NODE_ENV === "development"
                 ? "0x5fbdb2315678afecb367f032d93f642f64180aa3"
-                : "0xc9bbf44dF249cb75970EF789AB772Ed58Ba33FD3" ?? "",
+                : "0x0c5b6d4D7346781B3e1Ad60e999553b84Dc43411" ?? "",
             ACCOUNTABLE_ABI,
             provider
         );

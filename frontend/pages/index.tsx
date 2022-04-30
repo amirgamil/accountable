@@ -12,6 +12,7 @@ import { ethers } from "ethers";
 import { isEthersError } from "../lib/types";
 import { CHAIN_EXPLORER } from "../lib/defaults";
 import Link from "next/link";
+import { Spinner } from "../components/spinner";
 
 const Home: NextPage = () => {
     const [accBuddyAddress, setAccBuddyAdddress] = React.useState<string>("");
@@ -123,31 +124,41 @@ const Home: NextPage = () => {
                             <p className="text-s">Stay accountable by putting your money on the line. Literally.</p>
                             <div className="py-4"></div>
                             <div>
-                                <div className="flex flex-col">
-                                    <StyledInput
-                                        placeholder="Accountability buddy address (not ENS)"
-                                        value={accBuddyAddress}
-                                        onChange={(evt) => setAccBuddyAdddress(evt.target.value)}
-                                    />
-                                </div>
-                                <div className="py-4"></div>
-                                <div className="flex flex-col">
-                                    <StyledInput
-                                        className="py-2 px-4"
-                                        placeholder="Ether amount staked e.g. 0.01"
-                                        value={amountStaked}
-                                        onChange={(evt) => setAmountStakedHandler(evt)}
-                                    />
-                                </div>
-                                <div className="py-4"></div>
-                                <div className="flex flex-col">
-                                    <StyledInput
-                                        className="py-2 px-4"
-                                        placeholder="Name of task e.g. finish this project"
-                                        value={name}
-                                        onChange={(evt) => setName(evt.target.value)}
-                                    />
-                                </div>
+                                {loading ? (
+                                    <div className="w-full flex flex-col items-center justify-center m-0 p-0">
+                                        <div className="p-4">
+                                            <Spinner />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="flex flex-col">
+                                            <StyledInput
+                                                placeholder="Accountability buddy address (not ENS)"
+                                                value={accBuddyAddress}
+                                                onChange={(evt) => setAccBuddyAdddress(evt.target.value)}
+                                            />
+                                        </div>
+                                        <div className="py-4"></div>
+                                        <div className="flex flex-col">
+                                            <StyledInput
+                                                className="py-2 px-4"
+                                                placeholder="Ether amount staked e.g. 0.01"
+                                                value={amountStaked}
+                                                onChange={(evt) => setAmountStakedHandler(evt)}
+                                            />
+                                        </div>
+                                        <div className="py-4"></div>
+                                        <div className="flex flex-col">
+                                            <StyledInput
+                                                className="py-2 px-4"
+                                                placeholder="Name of task e.g. finish this project"
+                                                value={name}
+                                                onChange={(evt) => setName(evt.target.value)}
+                                            />
+                                        </div>
+                                    </>
+                                )}
                             </div>
                             <div className="py-4"></div>
                             <div className="w-full flex flex-col items-center justify-center p-0">

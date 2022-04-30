@@ -61,7 +61,7 @@ const Home: NextPage = () => {
                             answer={
                                 <>
                                     If you want to create a stake to stay accountable: <br></br>
-                                    1. navigate to <Link href="/">stake</Link> <br></br>
+                                    1. navigate to <Link href="/">home page</Link> <br></br>
                                     2. enter your accountability buddy address (who you trust), a name, and the amount
                                     to stake <br></br>
                                     3. click &quot;stake&quot; <br></br>
@@ -73,7 +73,7 @@ const Home: NextPage = () => {
                                     contract. <strong>You the stakee will not be able to recover the funds now.</strong>{" "}
                                     <br></br>
                                     6. upon completion or failure, the accountability buddy will mark the task as
-                                    successful (✓) or failed (✗) to return your money or take the money respectively.
+                                    successful (✓) or failed (✗) to return your money or donate the money respectively.
                                 </>
                             }
                         />
@@ -92,7 +92,7 @@ const Home: NextPage = () => {
                                     <br></br>
                                     <br></br>
                                     Since the tool is deployed on <a href="https://www.optimism.io/">Optimism</a> (an L2
-                                    Rollup on Ethereum), gas fees should be very low (less than $0.01) but that is the
+                                    Rollup on Ethereum), gas fees should be very low (less than $0.001) but that is the
                                     price of real accountability :)
                                 </>
                             }
