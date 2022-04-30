@@ -17,31 +17,36 @@ If you want to create a stake to stay accountable:
 1. navigate to [home page](https://keepmeaccountable.xyz/)
 2. enter your accountability buddy address (who you trust), a name, and the amount to stake
 
-<img width="1506" alt="1" src="https://user-images.githubusercontent.com/7995105/166094398-da4f156d-0d3b-4425-b8b6-a6cd45c29136.png">
+<img width="1511" alt="1" src="https://user-images.githubusercontent.com/7995105/166095192-ec5f5a9a-eeee-4685-b426-83ad671a78a9.png">
 
 3. click "stake"
 
 4. wait for the stake to be processed and the stake id to be generated
  
-<img width="1509" alt="2" src="https://user-images.githubusercontent.com/7995105/166094415-80d83ec0-27bc-4c7f-b2c4-635f2ee81129.png">
+<img width="1511" alt="2" src="https://user-images.githubusercontent.com/7995105/166095198-5ee01140-e1b8-4014-8d30-112a612375f0.png">
 
-5. navigate to `keepmeaccountable.xyz/stake?id=[stake id]`. If you entered the wrong buddy address, you can recover your deposited funds by aborting the stake. Otherwise, have your budy confirm to lock your money in the contract. You the stakee will not be able to recover the funds now without the buddy.
+5. navigate to `keepmeaccountable.xyz/stake?id=[stake id]` where `[stake id]` is your id. If you entered the wrong buddy address, you can recover your deposited funds by aborting the stake. Otherwise, **have your accountability budy confirm** to lock your money in the contract. You the stakee will not be able to recover the funds now without the buddy.
 
-<img width="1512" alt="3" src="https://user-images.githubusercontent.com/7995105/166094426-abd8d862-e012-4cd0-9aa9-818b18fec0b2.png">
+<img width="1512" alt="3" src="https://user-images.githubusercontent.com/7995105/166095218-32c544e4-10c1-4881-b3dd-5ef6ca74fead.png">
 
 6. upon completion or failure, the accountability buddy will mark the task as successful (✓) or failed (✗) to return your money or donate the money respectively. 
 
-<img width="1509" alt="Screen Shot 2022-04-29 at 11 34 19 PM" src="https://user-images.githubusercontent.com/7995105/166094733-e3205c4e-23c5-4351-a882-9d533a331fd8.png">
+<img width="1511" alt="4" src="https://user-images.githubusercontent.com/7995105/166095229-aea38d82-307b-4cc7-b664-5c841ed4653b.png">
 
 So in the example where the stakee accomplished the task, this is what it would look like
-<img width="1512" alt="4" src="https://user-images.githubusercontent.com/7995105/166094445-61bf934c-0985-4bb4-980b-e669a8c78c13.png">
+
+<img width="1512" alt="5" src="https://user-images.githubusercontent.com/7995105/166095233-af1b4fb7-c2dc-44b9-8561-fd959d08a80f.png">
+
 
 And this is what a failed stake will look like.
-<img width="1508" alt="Screen Shot 2022-04-29 at 5 30 04 PM" src="https://user-images.githubusercontent.com/7995105/166094747-99daddfc-eeec-4e16-97fc-bb027033b42f.png">
+
+<img width="1508" alt="fail" src="https://user-images.githubusercontent.com/7995105/166095235-ae10949c-e0f3-4be9-b605-3dd5485830ea.png">
+
 
 ### Note
 
 Note the address listed in the contract for [Khan Academy](https://www.khanacademy.org) was taken straight from their [donate page](https://www.khanacademy.org/donate).
+
 <img width="1510" alt="Screen Shot 2022-04-29 at 11 37 28 PM" src="https://user-images.githubusercontent.com/7995105/166094831-3ce6f06c-813e-4289-8684-ecab112adb30.png">
 
 
