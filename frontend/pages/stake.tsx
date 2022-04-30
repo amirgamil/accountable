@@ -13,7 +13,6 @@ import { mapArrToStake, oneEtherInWei, Stake } from "../lib/contractHelpers";
 import { Spinner } from "../components/spinner";
 import { isEthersError } from "../lib/types";
 import { CHAIN_EXPLORER } from "../lib/defaults";
-import { ethers } from "ethers";
 import Link from "next/link";
 
 enum ContractMethod {

@@ -25,13 +25,13 @@ export const AppContext = React.createContext<Context>({
 let web3Modal: Web3Modal;
 if (typeof window !== "undefined") {
     web3Modal = new Web3Modal({
-        network: process.env.NODE_ENV === "development" ? "31337" : "test", // change after deploy
+        network: process.env.NODE_ENV === "development" ? "31337" : "optimism", // change after deploy
         cacheProvider: true, // optional
         providerOptions: {},
     });
 }
 
-const NETWORK = process.env.NODE_ENV === "development" ? "unknown" : "optimism-kovan";
+const NETWORK = process.env.NODE_ENV === "development" ? "unknown" : "optimism";
 
 export const AppContextProvider = (props: any) => {
     const [signer, setSigner] = React.useState<providers.JsonRpcSigner | undefined>(undefined);
@@ -54,7 +54,7 @@ export const AppContextProvider = (props: any) => {
         const accountabilityContract = new ethers.Contract(
             process.env.NODE_ENV === "development"
                 ? "0x5fbdb2315678afecb367f032d93f642f64180aa3"
-                : "0x0c5b6d4D7346781B3e1Ad60e999553b84Dc43411" ?? "",
+                : "0xc9bbf44dF249cb75970EF789AB772Ed58Ba33FD3" ?? "",
             ACCOUNTABLE_ABI,
             provider
         );

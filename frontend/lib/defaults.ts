@@ -1,1 +1,1 @@
-export const CHAIN_EXPLORER = "https://kovan-optimistic.etherscan.io/";
+export const CHAIN_EXPLORER = "https://optimistic.etherscan.io/";

@@ -42,8 +42,8 @@ contract Accountable is ReentrancyGuard {
         //person who is staking their money to the contract
         address stakee; 
         //person who is entrusted to make sure the stakee is held accountable.
-        //@notice, this MUST be someone the stakee trusts, otherwise there is a risk
-        //a malicious person could take the money. The accounabilityBuddy is in charge
+        //@notice, this should be someone the stakee trusts, though there is no incentive
+        //for the buddy to be dishonest since they can't take they money. The accounabilityBuddy is in charge
         //of confirming to the contract whether the stakee did what they agreed on doing.
         address accountabilityBuddy;
         Status status;
@@ -58,6 +58,7 @@ contract Accountable is ReentrancyGuard {
     mapping (address => uint256[]) public stakeIDsForStakeeAddress;
     mapping (address => uint256[]) public stakeIDsForAccountabilityAddress;
 
+    //@notice, when a new stake is created
     event NewStakeCreated(string name, uint id);
     //@notice, if a stake is successfully completed (i.e. the stakee accomplished
     //the agreed upon goal)
@@ -149,7 +150,7 @@ contract Accountable is ReentrancyGuard {
         emit StakeAborted(stakes[stakeID].name, stakeID);
     }
 
-    //@notice, upon successful completion of the agreed upon task/goal/whatever, the accountability buddy
+    //@notice, upon successful completion of the agreed upon task/goal etc., the accountability buddy
     //marks the stake as successful for the money to be transferred back to the stakee.
     function markStakeSuccessful(uint256 stakeID) external validPendingStakeID(stakeID) nonReentrant {
         //ensure accountability buddy

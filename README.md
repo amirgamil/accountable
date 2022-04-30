@@ -35,9 +35,9 @@ Reminder to:
 -   Add loading state to index page while processing
 
 -   [ ] Change `CHAIN_DEFAULT` to Optimism explorer
--   [ ] Change address to deployed contract in `context.tsx`
--   [ ] Change `NETWORK` in context to `optimism`
--   [ ] Add deployed contract address to etherscan
+-   [x] Change address to deployed contract in `context.tsx`
+-   [x] Change `NETWORK` in context to `optimism`
+-   [x] Add deployed contract address to etherscan
 
 ## Disclaimer
 

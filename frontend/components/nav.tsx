@@ -25,7 +25,11 @@ export const Nav = () => {
                     <Container>
                         {context.address && (
                             <>
-                                <Link href={`/find`}>
+                                <Link
+                                    href={
+                                        "https://optimistic.etherscan.io/address/0xc9bbf44dF249cb75970EF789AB772Ed58Ba33FD3"
+                                    }
+                                >
                                     <button
                                         style={{
                                             background: "white",
