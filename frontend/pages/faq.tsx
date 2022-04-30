@@ -60,7 +60,9 @@ const Home: NextPage = () => {
                             question={"How do I use it?"}
                             answer={
                                 <>
-                                    If you want to create a stake to stay accountable: <br></br>
+                                    Detailed instructions with pictures can be found{" "}
+                                    <Link href="https://github.com/amirgamil/accountable">here</Link> but for a quick,
+                                    brief description: <br></br>
                                     1. navigate to <Link href="/">home page</Link> <br></br>
                                     2. enter your accountability buddy address (who you trust), a name, and the amount
                                     to stake <br></br>
@@ -92,7 +94,7 @@ const Home: NextPage = () => {
                                     <br></br>
                                     <br></br>
                                     Since the tool is deployed on <a href="https://www.optimism.io/">Optimism</a> (an L2
-                                    Rollup on Ethereum), gas fees should be very low (less than $0.001) but that is the
+                                    Rollup on Ethereum), gas fees should be very low (less than $0.5) but that is the
                                     price of real accountability :)
                                 </>
                             }
