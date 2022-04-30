@@ -1,11 +1,15 @@
 import { HardhatUserConfig } from "hardhat/types";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-etherscan";
 
 //My hardhat file for deployment minus secrets :)
-const ALCHEMY_API_KEY = "Hi :)";
+const OPTIMISM_KOVAN_ALCHEMY_API_KEY = "";
+const OPTIMISM_ALCHEMY_API_KEY = "";
 
-const ROPSTEN_PRIVATE_KEY = "Hello :)";
+const KOVAN_PRIVATE_KEY = "";
+const OPTIMISM_PRIVATE_KEY = "";
+const ETHER_SCAN_KEY = "";
 
 const config: HardhatUserConfig = {
     solidity: {
@@ -18,10 +22,17 @@ const config: HardhatUserConfig = {
         sources: "./contracts",
     },
     networks: {
-        kovan: {
-            url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
-            accounts: [`${ROPSTEN_PRIVATE_KEY}`],
+        // kovan: {
+        //     url: `https://opt-kovan.g.alchemy.com/v2/${OPTIMISM_KOVAN_ALCHEMY_API_KEY}`,
+        //     accounts: [`${KOVAN_PRIVATE_KEY}`],
+        // },
+        optimism: {
+            url: `https://opt-mainnet.g.alchemy.com/v2/${OPTIMISM_ALCHEMY_API_KEY}`,
+            accounts: [`${OPTIMISM_PRIVATE_KEY}`],
         },
+    },
+    etherscan: {
+        apiKey: ETHER_SCAN_KEY,
     },
 };
 export default config;
